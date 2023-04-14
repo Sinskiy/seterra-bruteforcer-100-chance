@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Seterra bruteforce 100% chance
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.1
 // @description  Extension for Seterra to train bruteforce. You don't have to try until the right path falls out. Just click
 // @author       Sinskiy
 // @match        *://*.geoguessr.com/seterra/*
@@ -18,8 +18,8 @@ const completion = document.getElementById("completion");
 const finalScore = document.getElementById("lblFinalScore2");
 const timer = document.getElementById("timer");
 const button = document.getElementById("cmdRestart");
-const divTips = document.getElementById("divTips");
-const score = document.getElementById("score");
+document.getElementById("score").setAttribute("id", "overrideScore");
+const score = document.getElementById("overrideScore");
 let time = 0;
 let finished = false;
 let amountOfClicked = 0;
@@ -73,8 +73,6 @@ function gmCheating() {
     });
     document.getElementById("questionFlag").style.display = "none";
     score.style.display = "none";
-    divTips.innerHTML = "Click shift + e to restart (alt + r conflicts)";
-    divTips.style.color = "green";
   } else {
     return;
   }
@@ -128,7 +126,6 @@ function restartButton() {
   finished = false;
   amountOfClicked = 0;
   completion.style.display = "none";
-  score.style.display = "none";
 
   gmCheating();
 }
