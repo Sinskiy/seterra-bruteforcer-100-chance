@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Seterra bruteforce 100% chance
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Extension for Seterra to train bruteforce. You don't have to try until the right path falls out. Just click
 // @author       Sinskiy
 // @match        *://*.geoguessr.com/seterra/*
@@ -9,19 +9,17 @@
 // @grant        none
 // ==/UserScript==
 
-
 // const & let
 
 const gmSelector = document.getElementById("drpGameMode");
-const countries = document.querySelectorAll("g");
-const amountOfCountries = Array.from(countries).filter((country) =>
-  country.classList.contains("q")
-).length;
+const countries = document.querySelectorAll(".q");
+const amountOfCountries = countries.length;
 const completion = document.getElementById("completion");
-const score = document.getElementById("lblFinalScore2");
+const finalScore = document.getElementById("lblFinalScore2");
 const timer = document.getElementById("timer");
 const button = document.getElementById("cmdRestart");
 const divTips = document.getElementById("divTips");
+const score = document.getElementById("score");
 let time = 0;
 let finished = false;
 let amountOfClicked = 0;
@@ -74,7 +72,7 @@ function gmCheating() {
       country.addEventListener("mousedown", whenCountryClicked);
     });
     document.getElementById("questionFlag").style.display = "none";
-    document.getElementById("score").style.display = "none";
+    score.style.display = "none";
     divTips.innerHTML = "Click shift + e to restart (alt + r conflicts)";
     divTips.style.color = "green";
   } else {
@@ -130,12 +128,14 @@ function restartButton() {
   finished = false;
   amountOfClicked = 0;
   completion.style.display = "none";
+  score.style.display = "none";
+
   gmCheating();
 }
 
 function restartKeyboard(e) {
-  if (e.shiftKey) {
-    if (e.code === "KeyE") {
+  if (e.altKey) {
+    if (e.code === "KeyR") {
       restartButton();
     }
   }
@@ -146,12 +146,12 @@ function showFinalScreen(country) {
   paint(country);
 
   completion.style.display = "block";
-  score.setAttribute("title", "Information is on the screen");
+  finalScore.setAttribute("title", "Information is on the screen");
 
-  score.innerHTML = finalTime();
+  finalScore.innerHTML = finalTime();
 
   timer.setAttribute("id", "overrideTimer");
-  document.getElementById("overrideTimer").innerHTML = score.innerHTML;
+  document.getElementById("overrideTimer").innerHTML = finalScore.innerHTML;
 
   clearInterval(timerCount);
 }
@@ -159,3 +159,4 @@ function showFinalScreen(country) {
 gmSelector.addEventListener("change", gmCheating);
 button.addEventListener("click", restartButton);
 document.addEventListener("keydown", restartKeyboard);
+
